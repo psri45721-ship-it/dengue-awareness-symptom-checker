@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dengue Symptom Checker</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f2f6f9;
+            color: #222;
+        }
+
+        header {
+            background: #c62828;
+            color: white;
+            text-align: center;
+            padding: 25px;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 850px;
+            margin: 30px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            color: #c62828;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .symptom {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f8f8;
+            border-radius: 6px;
+        }
+
+        .symptom input {
+            width: 18px;
+            height: 18px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: #c62828;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #a51f1f;
+        }
+
+        #result {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .possible {
+            background: #fff3cd;
+            border-left: 6px solid #ff9800;
+        }
+
+        .low {
+            background: #e8f5e9;
+            border-left: 6px solid #2e7d32;
+        }
+
+        .emergency {
+            background: #ffebee;
+            border-left: 6px solid #d32f2f;
+        }
+
+        .result-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .warning {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff8e1;
+            border-left: 5px solid #ffb300;
+        }
+
+        footer {
+            text-align: center;
+            background: #333;
+            color: white;
+            padding: 15px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>🦟 Dengue Symptom Checker</h1>
+    <p>Enter your details and symptoms for a basic health screening</p>
+</header>
+
+<div class="container">
+
+    <h2>Patient Information</h2>
+
+    <form id="dengueForm">
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="Enter your name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="age">Age</label>
+            <input type="number" id="age" min="1" max="120"
+                   placeholder="Enter your age" required>
+        </div>
+
+        <div class="form-group">
+            <label for="temperature">Temperature (°C)</label>
+            <input type="number" id="temperature"
+                   step="0.1" min="30" max="45"
+                   placeholder="Example: 39.0" required>
+        </div>
+
+        <div class="form-group">
+            <label for="days">Number of days with fever</label>
+            <input type="number" id="days" min="0" max="30"
+                   placeholder="Example: 3" required>
+        </div>
+
+        <h2>Common Symptoms</h2>
+
+        <div class="symptom">
+            <input type="checkbox" id="headache">
+            <label for="headache">Severe headache</label>
+        </div>
+
+        <div class="symptom">
+            <input type="checkbox" id="eyePain">
+            <label for="eyePain">Pain behind the eyes</label>
+        </div>
+
+        <div class="symptom">
+            <input type="checkbox" id="musclePain">
+            <label for="musclePain">Muscle, joint or bone pain</label>
+        </div>
+
+        <div class="symptom">
+            <input type="checkbox" id="nausea">
+            <label for="nausea">Nausea or vomiting</label>
+        </div>
+
+        <div class="symptom">
+            <input type="checkbox" id="rash">
+            <label for="rash">Skin rash</label>
+        </div>
+
+        <div class="symptom">
+            <input type="checkbox" id="weakness">
+            <label for="weakness">Weakness or extreme tiredness</label>
+        </div>
+
+        <h2>Warning Symptoms</h2>
+
+        <div class="symptom">
+            <input type="checkbox" id="abdominalPain">
+            <label for="abdominalPain">Severe abdominal pain</label>
+        </div>
+
+        <div class="symptom">
+            <input type="checkbox" id="persistentVomiting">
+            <label for="persistentVomiting">Persistent vomiting</label>
+        </div>
+
+        <div class="symptom">
+            <input type="checkbox" id="bleeding">
+            <label for="bleeding">Bleeding from nose or gums</label>
+        </div>
+
+        <div class="symptom">
+            <input type="checkbox" id="bloodStool">
+            <label for="bloodStool">Blood in vomit or stool</label>
+        </div>
+
+        <div class="symptom">
+            <input type="checkbox" id="breathing">
+            <label for="breathing">Difficulty breathing</label>
+        </div>
+
+        <div class="symptom">
+            <input type="checkbox" id="restlessness">
+            <label for="restlessness">Extreme weakness or restlessness</label>
+        </div>
+
+        <h2>Other Information</h2>
+
+        <div class="symptom">
+            <input type="checkbox" id="mosquito">
+            <label for="mosquito">Recent mosquito exposure</label>
+        </div>
+
+        <div class="symptom">
+            <input type="checkbox" id="previousDengue">
+            <label for="previousDengue">Previous dengue infection</label>
+        </div>
+
+        <button type="submit">Check Symptoms</button>
+
+    </form>
+
+    <div id="result"></div>
+
+    <div class="warning">
+        <strong>Important:</strong>
+        This tool is for educational screening only. It cannot confirm or
+        rule out dengue. A healthcare professional and appropriate testing
+        are needed for diagnosis.
+    </div>
+
+</div>
+
+<footer>
+    <p>Dengue Awareness &copy; 2026</p>
+</footer>
+
+
+<script>
+
+document.getElementById("dengueForm").addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    // Get patient details
+    const name = document.getElementById("name").value;
+    const age = Number(document.getElementById("age").value);
+    const temperature = Number(document.getElementById("temperature").value);
+    const days = Number(document.getElementById("days").value);
+
+    // Common symptoms
+    const commonSymptoms = [
+        "headache",
+        "eyePain",
+        "musclePain",
+        "nausea",
+        "rash",
+        "weakness"
+    ];
+
+    // Warning symptoms
+    const warningSymptoms = [
+        "abdominalPain",
+        "persistentVomiting",
+        "bleeding",
+        "bloodStool",
+        "breathing",
+        "restlessness"
+    ];
+
+    // Count common symptoms
+    let symptomCount = 0;
+
+    commonSymptoms.forEach(function(symptom) {
+        if (document.getElementById(symptom).checked) {
+            symptomCount++;
+        }
+    });
+
+    // Count warning symptoms
+    let warningCount = 0;
+
+    warningSymptoms.forEach(function(symptom) {
+        if (document.getElementById(symptom).checked) {
+            warningCount++;
+        }
+    });
+
+    const mosquitoExposure =
+        document.getElementById("mosquito").checked;
+
+    let result = document.getElementById("result");
+
+    result.style.display = "block";
+
+    // Emergency result
+    if (warningCount > 0) {
+
+        result.className = "emergency";
+
+        result.innerHTML = `
+            <div class="result-title">
+                ⚠️ Urgent Medical Attention Needed
+            </div>
+
+            <p>
+                Hello <strong>${name}</strong>.
+            </p>
+
+            <p>
+                You have reported one or more warning symptoms that can
+                occur with severe dengue or other serious illnesses.
+            </p>
+
+            <p>
+                <strong>Please seek urgent medical care now.</strong>
+            </p>
+
+            <p>
+                Do not use this webpage as a diagnosis.
+            </p>
+        `;
+
+        return;
+    }
+
+    // Screening result
+    if (
+        temperature >= 38 &&
+        symptomCount >= 2 &&
+        (mosquitoExposure || days >= 1)
+    ) {
+
+        result.className = "possible";
+
+        result.innerHTML = `
+            <div class="result-title">
+                🟠 Dengue-like Symptoms Detected
+            </div>
+
+            <p>
+                Hello <strong>${name}</strong>.
+            </p>
+
+            <p>
+                Your reported symptoms are compatible with dengue,
+                but symptoms alone cannot confirm dengue.
+            </p>
+
+            <p>
+                Please consult a healthcare professional, especially
+                if the fever continues or your symptoms worsen.
+            </p>
+
+            <p>
+                A healthcare professional may recommend appropriate
+                blood tests based on your illness and timing.
+            </p>
+        `;
+
+    } else {
+
+        result.className = "low";
+
+        result.innerHTML = `
+            <div class="result-title">
+                🟢 Dengue Symptoms Not Strongly Suggested
+            </div>
+
+            <p>
+                Hello <strong>${name}</strong>.
+            </p>
+
+            <p>
+                Based on the information entered, this screening tool
+                did not find a strong pattern of dengue-like symptoms.
+            </p>
+
+            <p>
+                However, this does <strong>not</strong> rule out dengue
+                or another illness.
+            </p>
+
+            <p>
+                If you have persistent fever or your condition becomes
+                worse, please consult a healthcare professional.
+            </p>
+        `;
+    }
+
+});
+
+</script>
+
+</body>
+</html>
